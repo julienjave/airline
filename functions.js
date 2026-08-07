@@ -42,19 +42,79 @@ const hasOneTransferRoute = (city1, city2) => {
 
 // 5. COUNT ALL CITIES
 // Traverse from one city to count what total number of cities are reachable on the graph.
-const countAllCities = city => {}
+const countAllCities = city => {
+    const stack = [city]
+    const visited = {}
+    let count = 0
+
+    while (stack.length > 0) {
+        const currentCity = stack.pop()
+        if (!visited[currentCity]) {
+            visited[currentCity] = true
+            count++
+        }
+        for (const neighbor of getNeighbors(currentCity)) {
+            if (!visited[neighbor]) {
+                stack.push(neighbor)
+            }
+        }
+    }
+
+    return count
+}
 
 // 6. PATH DISTANCE
 // Add up the full distance in km of a path like ["Montreal", "Atlanta", "Guadalajara"].
-const getPathDistance = path => {}
+const getPathDistance = path => {
+    let totalDistance = 0
+
+    for (let i=0; i<path.length - 1; i++) {
+        totalDistance += getKmDistance(path[i], path[i+1])
+    }
+
+    return totalDistance
+}
 
 // 7. PATH FUEL CONSUMPTION
 // Find the fuel used for a path (like ["Montreal", "Atlanta", "Guadalajara"]) in liters. Remember you can call the previous functions in this file as helpers.
-const getPathFuelConsumption = path => {}
+const getPathFuelConsumption = path => {
+    return getFuelConsumptionLiters(getPathDistance(path))
+}
 
 // 8. FEWEST TRANSFERS
 // Find the path from one city to another that requires the fewest transfers. Return an array of 3-letter airport codes.
-const getFewestTransfersPath = (startCity, endCity) => {}
+const getFewestTransfersPath = (startCity, endCity) => {
+    const queue = [startCity]
+    const visited = {}
+    const previous = {}
+    visited[startCity] = true
+
+    while (queue.length > 0) {
+        const currentCity = queue.shift()
+        if (currentCity === endCity) break
+
+        for (const nextCity of getNeighbors(currentCity)) {
+            if (!visited[nextCity]) {
+                visited[nextCity] = true
+                previous[nextCity] = currentCity
+                queue.push(nextCity)
+            }
+        }
+    }
+
+    if (!visited[endCity]) return []
+
+    const path = []
+    let city = endCity
+
+    while (city) {
+        path.unshift(getCityFromGraph(city).code) 
+        if (city === startCity) break
+        city = previous[city]
+    }
+
+    return path
+}
 
 // 9. SHORTEST PATH
 // Find the shortest-distance path and return an array of 3-letter airport codes.
