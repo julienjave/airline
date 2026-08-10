@@ -118,11 +118,21 @@ const getFewestTransfersPath = (startCity, endCity) => {
 
 // 9. SHORTEST PATH
 // Find the shortest-distance path and return an array of 3-letter airport codes.
-const getShortestDistancePath = (startCity, endCity) => {}
+const getShortestDistancePath = (startCity, endCity) => {
+    
+}
 
 // 10. FIND HUB CITY
 // Return the name of the airport with the most direct connections.
-const findHubCity = () => {}
+const findHubCity = () => {
+    const hash = {}
+
+    Object.values(graph.cities).forEach(city => hash[city.city] = getNeighbors(city.city).length)
+    const hubCity = Object.keys(hash).reduce((a,b) => hash[a] > hash[b] ? a : b)
+
+    return getCityFromGraph(hubCity).airport
+}
+
 
 window.getNeighbors = getNeighbors
 window.getFuelConsumptionLiters = getFuelConsumptionLiters
