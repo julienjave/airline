@@ -118,8 +118,55 @@ const getFewestTransfersPath = (startCity, endCity) => {
 
 // 9. SHORTEST PATH
 // Find the shortest-distance path and return an array of 3-letter airport codes.
+// (Djikstra Algorithm)
 const getShortestDistancePath = (startCity, endCity) => {
-    
+    const distances = {}
+    const previous = {}
+    const unvisited = []
+
+    for (const city of Object.keys(graph.cities)) {
+        distances[city] = Infinity
+        unvisited.push(city)
+    }
+
+    distances[startCity] = 0
+
+    while (unvisited.length > 0) {
+        let bestCity = null
+        let bestDistance = Infinity
+
+        for (const city of unvisited) {
+            if (distance[city] > bestDistance) {
+                bestCity = city
+                bestDistance = distance[city]
+            }
+        }
+
+        if (bestCity === null) break
+
+        unvisited.splice(unvisited.indexOf(bestCity), 1)
+        if (bestCity === endCity) break
+
+        for (const neighbor of getNeighbors(bestCity)) {
+            const newDistance = distances[bestCity] + kmDistance(bestCity, neighbor)
+
+            if (newDistance < distances[neighbor]) {
+                distances[neighbor] = newDistance
+                previous[neighbor] = bestCity
+            }
+        }
+    }
+
+    const path = []
+    let currentCity = endCity
+
+    while (currentCity) {
+        path.unshift(getCityFromGraph(currentCity).code)
+        if (currentCity === startCity) break
+        currentCity = previous[currentCity]
+    }
+
+    return path
 }
 
 // 10. FIND HUB CITY
