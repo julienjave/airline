@@ -136,9 +136,9 @@ const getShortestDistancePath = (startCity, endCity) => {
         let bestDistance = Infinity
 
         for (const city of unvisited) {
-            if (distance[city] > bestDistance) {
+            if (distances[city] < bestDistance) {
                 bestCity = city
-                bestDistance = distance[city]
+                bestDistance = distances[city]
             }
         }
 
@@ -159,9 +159,9 @@ const getShortestDistancePath = (startCity, endCity) => {
 
     const path = []
     let currentCity = endCity
-
+    
     while (currentCity) {
-        path.unshift(getCityFromGraph(currentCity).code)
+        path.unshift(graph.cities[currentCity].code)
         if (currentCity === startCity) break
         currentCity = previous[currentCity]
     }
